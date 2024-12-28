@@ -1,5 +1,8 @@
 <script setup>
 import { reactive } from 'vue';
+import Cabecalho from './components/Cabecalho.vue';
+import Formulario from './components/Formulario.vue';
+import listaDeTarefas from './components/listaDeTarefas.vue';
 
   const estado = reactive ({
     filtro: "todas",
@@ -54,42 +57,10 @@ import { reactive } from 'vue';
 
 <template>
   <div class="container">
-    <header class="p-5 mb-4 mt-4 bg-light rounded-3">
-      <h1>Minhas Atividades</h1>
-      <p>
-        Vocé possui {{ getAtividadesPendentes().length }} atividades pendentes
-      </p>
-    </header>
-  <form @submit.prevent="cadastraAtividade">
-    <div class="row">
-      <div class="col">
-        <input :value="estado.atividadeTemp" @change="evento => estado.atividadeTemp = evento.target.value" required type="text" placeholder="Digite a descrição da atividade" class="form-control">
-      </div>
-      <div class="col-md-2">
-        <button type="submit" class="btn btn-primary">Cadastrar</button>
-      </div>
-      <div class="col-md-2">
-        <select @change="evento => estado.filtro = evento.target.value" class="form-control">
-          <option value="todas">Todas atividades</option>
-          <option value="pendentes">Pendentes</option>
-          <option value="finalizadas">Finalizadas</option>
-        </select>
-      </div>
-    </div>
-  </form>
-  <ul class="list-group mt-4">
-    <li class="list-group-item" v-for="atividade in getAtividadesFiltradas">
-      <input @change="evento => atividade.finalizada = evento.target.checked" :checked="atividade.finalizada" :id="atividade.titulo" type="checkbox">
-      <label :class="{ done: atividade.finalizada }" class="ms-3" :for="atividade.titulo">
-        {{ atividade.titulo }}
-      </label>
-    </li>
-  </ul>
+    <Cabecalho :atividades-pendentes="getAtividadesPendentes().length" />
+    <Formulario :trocar-filtro="evento => estado.filtro = evento.target.value" :atividade-temp="estado.atividadeTemp" :edita-atividade-temp="evento => estado.atividadeTemp = evento.target.value" :cadastraatividade="cadastraAtividade" />
+    <listaDeTarefas :atividades="getAtividadesFiltradas()" />
   </div>
 </template>
 
-<style scoped>
-.done {
-  text-decoration: line-through;
-}
-</style>
+
